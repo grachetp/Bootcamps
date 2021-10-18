@@ -20,6 +20,12 @@ namespace DevReviews.API.Persistence
             {
                 p.ToTable("Product");
                 p.HasKey(p => p.Id);
+
+                p.HasMany(pp => pp.Reviews)
+                .WithOne()
+                .HasForeignKey(r => r.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             });
 
             modelBuilder.Entity<ProductReview>(pr =>
@@ -28,7 +34,8 @@ namespace DevReviews.API.Persistence
                 pr.HasKey(p => p.Id);
 
                 pr.Property(p => p.Author)
-                    .HasMaxLength(50);
+                    .HasMaxLength(50)
+                    .IsRequired();
 
             });
         }

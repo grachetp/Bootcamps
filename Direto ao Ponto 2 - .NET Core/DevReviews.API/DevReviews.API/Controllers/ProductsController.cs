@@ -3,6 +3,7 @@ using DevReviews.API.Entities;
 using DevReviews.API.Models;
 using DevReviews.API.Persistence;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,19 +13,19 @@ namespace DevReviews.API.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        private readonly DevReviewsDbContext _DbContext;
+        private readonly DevReviewsDbContext _dbContext;
         private readonly IMapper _mapper;
 
         public ProductsController(DevReviewsDbContext dbContext, IMapper mapper)
         {
-            _DbContext = dbContext;
+            _dbContext = dbContext;
             _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var products = _DbContext.Products;
+            var products = _dbContext.Products;
 
             //var productsViewModel = products.Select(p => new ProductViewModel(p.Id, p.Title, p.Price));
 
@@ -36,7 +37,10 @@ namespace DevReviews.API.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var product = _DbContext.Products.SingleOrDefault(p => p.Id == id);
+            var product = _dbContext
+                .Products
+                .Include(p => p.Reviews)
+                .SingleOrDefault(p => p.Id == id);
 
             if(product == null)
             {
@@ -66,7 +70,8 @@ namespace DevReviews.API.Controllers
         {
             var product = new Product(model.Title, model.Description, model.Price);
 
-            _DbContext.Products.Add(product);
+            _dbContext.Products.Add(product);
+            _dbContext.SaveChanges();
 
             return CreatedAtAction(nameof(GetById), new { id = product.Id }, model);
         }
@@ -79,7 +84,7 @@ namespace DevReviews.API.Controllers
                 return BadRequest();
             }
 
-            var product = _DbContext.Products.SingleOrDefault(p => p.Id == id);
+            var product = _dbContext.Products.SingleOrDefault(p => p.Id == id);
 
             if (product == null)
             {
@@ -87,6 +92,8 @@ namespace DevReviews.API.Controllers
             }
 
             product.Update(model.Description, model.Price);
+
+            _dbContext.SaveChanges();
 
             return NoContent();
         }
