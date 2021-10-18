@@ -27,8 +27,6 @@ namespace DevReviews.API.Controllers
         {
             var products = _dbContext.Products;
 
-            //var productsViewModel = products.Select(p => new ProductViewModel(p.Id, p.Title, p.Price));
-
             var productsViewModel = _mapper.Map<List<ProductViewModel>>(products);
 
             return Ok(productsViewModel);
@@ -46,19 +44,6 @@ namespace DevReviews.API.Controllers
             {
                 return NotFound();
             }
-
-            //var reviewsViewModel = product.Reviews
-            //    .Select(r => new ProductReviewViewModel(r.Id, r.Author, r.Rating, r.Comments, r.RegisteredAt))
-            //    .ToList();
-
-            //var productDetails = new ProductDetailsViewModel(
-            //    product.Id,
-            //    product.Title,
-            //    product.Description,
-            //    product.Price,
-            //    product.RegisteredAt,
-            //    reviewsViewModel
-            //    );
 
             var productDetails = _mapper.Map<ProductDetailsViewModel>(product);
 
