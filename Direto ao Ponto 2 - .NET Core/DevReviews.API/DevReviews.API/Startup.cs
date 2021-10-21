@@ -1,5 +1,6 @@
 using DevReviews.API.Persistence;
 using DevReviews.API.Profiles;
+using DevReviews.API.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,8 @@ namespace DevReviews.API
             var connectionString = Configuration.GetValue<string>("DevReviewsCn");
 
             services.AddDbContext<DevReviewsDbContext>(options => options.UseSqlServer(connectionString));
+
+            services.AddScoped<IProductRepository, ProductRepository>();
 
             services.AddAutoMapper(typeof(ProductProfile));
 

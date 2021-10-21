@@ -11,6 +11,7 @@ namespace DevReviews.API.Profiles
             CreateMap<ProductReview, ProductReviewViewModel>();
             CreateMap<Product, ProductViewModel>();
             CreateMap<Product, ProductDetailsViewModel>();
+            CreateMap<ProductReview, ProductReviewDetailsViewModel>();
         }
     }
 }
